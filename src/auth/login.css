@@ -1,0 +1,18 @@
+.userForm{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userForm > form {
+  border: 2px solid black;
+  padding: 5vmin;
+  width: 60vmin;
+}
+
+.error{
+  color: red;
+  display: none;
+}
