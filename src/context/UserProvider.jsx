@@ -18,7 +18,6 @@ export const UserProvider = ({ children }) => {
     setToken(null);
     setUser(null);
   };
-  console.log(date);
   // validamos que la fecha de expiracion sea mayor que la fecha actual
   if (!date || new Date(date).getTime() > Date.now()) {
     logout();
@@ -36,7 +35,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ token, user, login }}>
+    <UserContext.Provider value={{ token, user, login, logout }}>
       {children}
     </UserContext.Provider>
   );
