@@ -1,0 +1,27 @@
+
+.error{
+  color: red;
+  display: none;
+}
+
+.userForm{
+  width: fit-content;
+  border: 1px solid black;
+}
+
+
+.center-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.tab-content {
+  padding: 5vmin;
+}
+
+.nav-tabs {
+  margin-top: 1vmin;
+}

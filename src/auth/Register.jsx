@@ -6,16 +6,17 @@ import config from "../config";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
-export const Login = () => {
+export const Register = () => {
   const userContext = useContext(UserContext);
   // campos del formulario
   const { formState, onInputChange } = useForm({
     email: "",
     contra: "",
+    verContra: "",
+    usuario: "",
   });
   // hook para sacar al usuario al hacer login
   const navigate = useNavigate();
-
   // campo para mostrar los errores
   const errorElement = useRef();
   const mostrarError = (mensaje) => {
@@ -23,47 +24,53 @@ export const Login = () => {
     errorElement.current.style.display = "block";
   };
 
-  // manejamos el login
+  // manejamos el registro
   const handleSubmit = (evt, formState) => {
     evt.preventDefault();
     // recogemos los campos del formulario
-    const { email, contra } = formState;
-    if (email === "" || contra === "")
+    const { email, contra, usuario, verContra } = formState;
+    if (email === "" || contra === "" || usuario === "")
       return mostrarError("Todos los campos son obligatorios");
     // validamos el formato del email
     if (!validateEmail(email)) {
       mostrarError("El email no es valido");
       return;
     }
+    // validamos que la contraseña y la verificacion sean iguales
+    if (contra !== verContra) {
+      mostrarError("Las contraseñas no coinciden");
+      return;
+    }
     // hacemos la peticion al servidor
-    fetch(config.loginRoute, {
+    fetch(config.registerRoute, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        nombre: usuario,
         correo: email,
         password: contra,
       }),
     })
       .then(async (res) => {
         const data = await res.json();
-        if (!res.ok) throw new Error("email/contraseña no encontrados");
-        // recogemos el token con el usuario y lo guardamos en el contexto
+        if (!res.ok) throw new Error(data.errors[0].msg);
+        // recogemos el token con el usuario y se lo pasamos al contexto
         userContext.login(data.token, data.usuario);
         navigate("/");
       })
       .catch((err) => {
+        console.log(err);
         mostrarError(err);
       });
   };
 
   return (
-    // Formulario basico de login con react-bootstrap
     <Form onSubmit={(evt) => handleSubmit(evt, formState)}>
-      <h2>Inicio de sesion</h2>
+      <h2>Registro</h2>
       <p className="error" ref={errorElement}></p>
-      <Form.Group controlId="formLoginEmail" className="mb-3">
+      <Form.Group controlId="formRegisterEmail" className="mb-3">
         <Form.Label>Email</Form.Label>
         <Form.Control
           type="email"
@@ -73,7 +80,17 @@ export const Login = () => {
           onChange={onInputChange}
         />
       </Form.Group>
-      <Form.Group controlId="formLoginPassword" className="mb-3">
+      <Form.Group controlId="formRegisterUsername" className="mb-3">
+        <Form.Label>Usuario</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Este sera tu nombre de usuario"
+          name="usuario"
+          value={formState.usuario}
+          onChange={onInputChange}
+        />
+      </Form.Group>
+      <Form.Group controlId="formRegisterPassword" className="mb-3">
         <Form.Label>Contraseña</Form.Label>
         <Form.Control
           type="password"
@@ -83,8 +100,18 @@ export const Login = () => {
           onChange={onInputChange}
         />
       </Form.Group>
+      <Form.Group controlId="formRegisterVerPassword" className="mb-3">
+        <Form.Label>Verificación</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Verifica tu contraseña"
+          name="verContra"
+          value={formState.verContra}
+          onChange={onInputChange}
+        />
+      </Form.Group>
       <Button type="submit" variant="outline-primary">
-        Iniciar sesion
+        Registrate
       </Button>
     </Form>
   );
