@@ -1,22 +1,18 @@
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "../hooks/useForm";
-import { useContext, useRef } from "react";
+import { useRef, useState } from "react";
 import { validateEmail } from "../helpers/data-validators";
 import config from "../config";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
 
 export const Register = () => {
-  const userContext = useContext(UserContext);
+  const [modal, setModal] = useState(false);
   // campos del formulario
-  const { formState, onInputChange } = useForm({
+  const { formState, onInputChange, onResetForm } = useForm({
     email: "",
     contra: "",
     verContra: "",
     usuario: "",
   });
-  // hook para sacar al usuario al hacer login
-  const navigate = useNavigate();
   // campo para mostrar los errores
   const errorElement = useRef();
   const mostrarError = (mensaje) => {
@@ -55,10 +51,9 @@ export const Register = () => {
     })
       .then(async (res) => {
         const data = await res.json();
-        if (!res.ok) throw new Error(data.errors[0].msg);
-        // recogemos el token con el usuario y se lo pasamos al contexto
-        userContext.login(data.token, data.usuario);
-        navigate("/");
+        if (res.errors) throw new Error(data.errors[0].msg);
+        onResetForm();
+        setModal(true);
       })
       .catch((err) => {
         console.log(err);
@@ -113,6 +108,23 @@ export const Register = () => {
       <Button type="submit" variant="outline-primary">
         Registrate
       </Button>
+      <Modal show={modal}>
+        <Modal.Header closeButton onHide={() => setModal(false)}>
+          <Modal.Title>Registro completado!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Se ha enviado un correo de verificación a tu cuenta de correo
+            electronico, por favor, revisa tu bandeja de entrada y sigue las
+            instrucciones para verificar tu cuenta.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => setModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Form>
   );
 };
