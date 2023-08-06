@@ -1,0 +1,37 @@
+.chat-prueba {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    height: 400px;
+    margin: 0 auto;
+    max-width: 600px;
+    position: relative;
+    width: 100%;
+}
+
+.chat-prueba form{
+    background-color: #eee;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    position: absolute;
+    right: 0;
+}
+
+.chat-prueba form input{
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    padding: 0.5rem;
+    width: 80%;
+}
+
+.chat-prueba form button{
+    background-color: #0084ff;
+    border: none;
+    border-radius: 0.25rem;
+    color: #fff;
+    font-size: 1rem;
+    padding: 0.5rem;
+}
